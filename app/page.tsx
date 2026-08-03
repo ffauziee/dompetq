@@ -2,14 +2,14 @@
 "use client";
 
 /* ─── Types ─── */
-interface Testimonial {
-  id: number;
-  quote: string;
-  author: string;
-  location: string;
-  avatar: string;
-  variant: "white" | "muted" | "dark";
-}
+// interface Testimonial {
+//   id: number;
+//   quote: string;
+//   author: string;
+//   location: string;
+//   avatar: string;
+//   variant: "white" | "muted" | "dark";
+// }
 
 import TestimonialEx1 from "@/components/landing/testimonial-ex-1";
 import Hero from "@/components/landing/hero1";

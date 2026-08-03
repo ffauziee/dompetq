@@ -13,10 +13,107 @@ import {
 import { ArrowRight, Calendar, Moon, Sun, Menu, X } from "lucide-react";
 import { useTheme } from "@/components/theme/themeProvider";
 
+function Toggle({
+  checked,
+  onChange,
+}: {
+  checked: boolean;
+  onChange: (v: boolean) => void;
+}) {
+  return (
+    <button
+      role="switch"
+      aria-checked={checked}
+      onClick={() => onChange(!checked)}
+      className={`relative flex h-5 w-9 shrink-0 items-center rounded-full transition-colors duration-200 cursor-pointer ${
+        checked
+          ? "bg-gray-900 dark:bg-neutral-50"
+          : "bg-gray-200 dark:bg-neutral-700"
+      }`}
+    >
+      <motion.span
+        // layout
+        animate={{ x: checked ? 20 : 0 }}
+        transition={{ type: "spring", stiffness: 500, damping: 30 }}
+        className="h-4 w-4 rounded-full bg-white shadow-sm dark:bg-neutral-900"
+        // style={{ marginLeft: checked ? "18px" : "2px" }}
+      />
+    </button>
+  );
+}
+
+function ThemeToggle({
+  darkMode,
+  onToggleTheme,
+}: {
+  darkMode: boolean;
+  onToggleTheme: () => void;
+}) {
+  return (
+    <motion.div
+      layout
+      className="flex items-center gap-1.5 rounded-lg px-2 py-1.5"
+      transition={{
+        layout: { duration: 0.25 },
+      }}
+    >
+      <motion.button
+        type="button"
+        onClick={() => onToggleTheme()}
+        aria-label="Switch to light mode"
+        whileTap={{ scale: 0.85 }}
+        whileHover={{ scale: 1.15 }}
+        className={`flex h-4 w-4 cursor-pointer items-center justify-center ${
+          darkMode ? "text-gray-500 hover:text-gray-300" : "text-gray-900"
+        }`}
+      >
+        <AnimatePresence mode="wait">
+          {!darkMode && (
+            <motion.div
+              initial={{ opacity: 0, rotate: -90, scale: 0.5 }}
+              animate={{ opacity: 1, rotate: 0, scale: 1 }}
+              exit={{ opacity: 0, rotate: 90, scale: 0.5 }}
+              transition={{ duration: 0.2 }}
+            >
+              <Sun size={14} />
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </motion.button>
+
+      <Toggle checked={darkMode} onChange={onToggleTheme} />
+
+      <motion.button
+        type="button"
+        onClick={() => onToggleTheme()}
+        aria-label="Switch to dark mode"
+        whileTap={{ scale: 0.85 }}
+        whileHover={{ scale: 1.15 }}
+        className={`flex h-4 w-4 cursor-pointer items-center justify-center ${
+          darkMode ? "text-gray-50" : "text-gray-300 hover:text-gray-500"
+        }`}
+      >
+        <AnimatePresence mode="wait">
+          {darkMode && (
+            <motion.div
+              initial={{ opacity: 0, rotate: 90, scale: 0.5 }}
+              animate={{ opacity: 1, rotate: 0, scale: 1 }}
+              exit={{ opacity: 0, rotate: -90, scale: 0.5 }}
+              transition={{ duration: 0.2 }}
+            >
+              <Moon size={14} />
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </motion.button>
+    </motion.div>
+  );
+}
+
 export default function Hero1() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const { theme, toggle } = useTheme();
+  const { theme, toggle: toggleTheme } = useTheme();
   const heroRef = useRef<HTMLDivElement>(null);
   const heroInView = useInView(heroRef, { once: true, margin: "-80px 0px" });
 
@@ -38,7 +135,6 @@ export default function Hero1() {
 
   const navLinks = [
     { target: "features", label: "Features" },
-    // { target: "pricing", label: "Pricing" },
     { target: "about", label: "About" },
     { target: "contact", label: "Contact" },
   ];
@@ -77,11 +173,14 @@ export default function Hero1() {
                 />
               </Link>
 
-              <nav>
+              <nav className="hidden md:block">
                 {navLinks.map((l) => (
                   <button
                     key={l.target}
-                    onClick={() => scrollToSection(l.target)}
+                    onClick={() => {
+                      scrollToSection(l.target);
+                      setMenuOpen(false);
+                    }}
                     className="px-3 py-1.5 rounded-md text-sm text-zinc-500 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white hover:bg-zinc-100/70 dark:hover:bg-zinc-800/50 transition-all duration-150 font-medium"
                   >
                     {l.label}
@@ -96,17 +195,10 @@ export default function Hero1() {
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.15, duration: 0.5 }}
             >
-              <button
-                onClick={toggle}
-                className="p-2 rounded-md text-zinc-500 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
-                aria-label="Toggle theme"
-              >
-                {theme === "dark" ? (
-                  <Sun className="w-4 h-4" />
-                ) : (
-                  <Moon className="w-4 h-4" />
-                )}
-              </button>
+              <ThemeToggle
+                darkMode={theme === "dark"}
+                onToggleTheme={toggleTheme}
+              />
               <Link
                 href="/auth/login"
                 className="px-3.5 py-1.5 text-sm font-medium text-zinc-600 dark:text-zinc-300 hover:text-zinc-950 dark:hover:text-white transition-colors"
@@ -127,16 +219,10 @@ export default function Hero1() {
             </motion.div>
 
             <div className="flex items-center gap-1 md:hidden">
-              <button
-                onClick={toggle}
-                className="p-2 rounded-md text-zinc-500 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
-              >
-                {theme === "dark" ? (
-                  <Sun className="w-4 h-4" />
-                ) : (
-                  <Moon className="w-4 h-4" />
-                )}
-              </button>
+              <ThemeToggle
+                darkMode={theme === "dark"}
+                onToggleTheme={toggleTheme}
+              />
               <button
                 onClick={() => setMenuOpen(!menuOpen)}
                 className="p-2 rounded-md text-zinc-500 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
@@ -162,26 +248,30 @@ export default function Hero1() {
             >
               <div className="px-4 py-3 space-y-0.5">
                 {navLinks.map((l) => (
-                  <Link
+                  <button
                     key={l.target}
-                    href={l.target}
+                    onClick={() => {
+                      setMenuOpen(false);
+                      setTimeout(() => {
+                        scrollToSection(l.target);
+                      }, 200);
+                    }}
                     className="block px-3 py-2.5 rounded-md text-sm font-medium text-zinc-600 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors"
-                    onClick={() => setMenuOpen(false)}
                   >
                     {l.label}
-                  </Link>
+                  </button>
                 ))}
               </div>
               <div className="px-4 py-3 border-t border-zinc-100 dark:border-zinc-800/60 space-y-2">
                 <Link
-                  href="/login"
+                  href="/auth/login"
                   className="block px-3 py-2.5 rounded-md text-sm font-medium text-zinc-600 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-800"
                   onClick={() => setMenuOpen(false)}
                 >
                   Sign in
                 </Link>
                 <Link
-                  href="/register"
+                  href="/auth/register"
                   className="block px-3 py-2.5 rounded-md text-sm font-medium bg-zinc-950 dark:bg-white text-white dark:text-zinc-950 text-center"
                   onClick={() => setMenuOpen(false)}
                 >
@@ -195,14 +285,14 @@ export default function Hero1() {
 
       <section className="relative pt-28 pb-24 md:pt-36 md:pb-32 overflow-hidden">
         <motion.div
-          className="pointer-events-none absolute -top-32 -right-32 w-[500px] h-[500px] rounded-full bg-zinc-100 dark:bg-zinc-900"
+          className="pointer-events-none absolute -top-32 -right-32 w-125 h-125 rounded-full bg-zinc-100 dark:bg-zinc-900"
           style={{ y: y1 }}
           initial={{ opacity: 0 }}
           animate={{ opacity: 0.6 }}
           transition={{ duration: 1 }}
         />
         <motion.div
-          className="pointer-events-none absolute -bottom-48 -left-48 w-[600px] h-[600px] rounded-full bg-zinc-100 dark:bg-zinc-900"
+          className="pointer-events-none absolute -bottom-48 -left-48 w-150 h-150 rounded-full bg-zinc-100 dark:bg-zinc-900"
           style={{ y: y2 }}
           initial={{ opacity: 0 }}
           animate={{ opacity: 0.5 }}
@@ -249,7 +339,7 @@ export default function Hero1() {
                 <span className="relative">
                   <span className="relative z-10">finances</span>
                   <motion.span
-                    className="absolute bottom-1 left-0 right-0 h-[5px] bg-zinc-200 dark:bg-zinc-700 rounded-full -z-0"
+                    className="absolute bottom-1 left-0 right-0 h-1.25 bg-zinc-200 dark:bg-zinc-700 rounded-full z-0"
                     initial={{ scaleX: 0, originX: 0 }}
                     animate={heroInView ? { scaleX: 1 } : {}}
                     transition={{ duration: 0.6, delay: 0.75 }}

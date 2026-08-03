@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unused-expressions */
+/* eslint-disable react-hooks/set-state-in-effect */
+/* eslint-disable @next/next/no-img-element */
 "use client";
 
 /**
@@ -80,6 +83,7 @@ import {
   Moon,
   Crown,
 } from "lucide-react";
+import { useTheme } from "@/components/theme/themeProvider";
 
 // ─── Font (applied once, inherited everywhere) ─────────────────────────────
 const font = {
@@ -1290,10 +1294,27 @@ function Sidebar({
         <button className="flex min-w-0 items-center gap-3 rounded-lg px-1.5 py-1 transition-colors hover:bg-gray-50 dark:hover:bg-neutral-800">
           <div className="relative h-9 w-9 shrink-0 overflow-hidden rounded-lg bg-gray-900 dark:bg-white flex items-center justify-center">
             <svg viewBox="0 0 24 24" fill="none" className="w-5 h-5">
-              <rect width="24" height="24" rx="6" className="fill-white dark:fill-zinc-950" />
-              <path d="M7 9h10v8H7z" className="stroke-zinc-950 dark:stroke-white" strokeWidth="1.4" />
-              <path d="M5 11h14v1.5H5z" className="fill-zinc-950 dark:fill-white" />
-              <circle cx="12" cy="14.5" r="1.5" className="fill-zinc-950 dark:fill-white" />
+              <rect
+                width="24"
+                height="24"
+                rx="6"
+                className="fill-white dark:fill-zinc-950"
+              />
+              <path
+                d="M7 9h10v8H7z"
+                className="stroke-zinc-950 dark:stroke-white"
+                strokeWidth="1.4"
+              />
+              <path
+                d="M5 11h14v1.5H5z"
+                className="fill-zinc-950 dark:fill-white"
+              />
+              <circle
+                cx="12"
+                cy="14.5"
+                r="1.5"
+                className="fill-zinc-950 dark:fill-white"
+              />
             </svg>
           </div>
 
@@ -1445,10 +1466,10 @@ function AvatarStack() {
 
 function ThemeToggle({
   darkMode,
-  setDarkMode,
+  onToggleTheme,
 }: {
   darkMode: boolean;
-  setDarkMode: (v: boolean) => void;
+  onToggleTheme: () => void;
 }) {
   return (
     <motion.div
@@ -1460,7 +1481,7 @@ function ThemeToggle({
     >
       <motion.button
         type="button"
-        onClick={() => setDarkMode(false)}
+        onClick={() => onToggleTheme()}
         aria-label="Switch to light mode"
         whileTap={{ scale: 0.85 }}
         whileHover={{ scale: 1.15 }}
@@ -1482,11 +1503,11 @@ function ThemeToggle({
         </AnimatePresence>
       </motion.button>
 
-      <Toggle checked={darkMode} onChange={setDarkMode} />
+      <Toggle checked={darkMode} onChange={onToggleTheme} />
 
       <motion.button
         type="button"
-        onClick={() => setDarkMode(true)}
+        onClick={() => onToggleTheme()}
         aria-label="Switch to dark mode"
         whileTap={{ scale: 0.85 }}
         whileHover={{ scale: 1.15 }}
@@ -1518,7 +1539,7 @@ function TopBar({
   notifCount,
   onBell,
   darkMode,
-  setDarkMode,
+  onToggleTheme,
 }: {
   title: string;
   onShare: () => void;
@@ -1526,7 +1547,7 @@ function TopBar({
   notifCount: number;
   onBell: () => void;
   darkMode: boolean;
-  setDarkMode: (v: boolean) => void;
+  onToggleTheme: () => void;
 }) {
   return (
     <div className="flex items-center justify-between border-b border-gray-100 px-6 py-4 dark:border-neutral-800">
@@ -1534,7 +1555,7 @@ function TopBar({
         {title}
       </h1>
       <div className="flex items-center gap-3">
-        <ThemeToggle darkMode={darkMode} setDarkMode={setDarkMode} />
+        <ThemeToggle darkMode={darkMode} onToggleTheme={onToggleTheme} />
         <button
           onClick={onShare}
           className="flex h-9 w-9 items-center justify-center rounded-lg text-gray-400 hover:bg-gray-100 hover:text-gray-600 dark:text-neutral-500 dark:hover:bg-neutral-800 dark:hover:text-neutral-300 cursor-pointer"
@@ -2150,7 +2171,9 @@ export default function Dashboard2() {
     buildDatasets(),
   );
   const [active, setActive] = useState("Product");
-  const [darkMode, setDarkMode] = useState(false);
+  // const [darkMode, seDarkMode] = useState(false);
+  const { theme, toggle: toggleTheme } = useTheme();
+  const darkMode = theme === "dark";
   const [showStats, setShowStats] = useState(true);
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("All");
@@ -2160,7 +2183,7 @@ export default function Dashboard2() {
   const [selected, setSelected] = useState<Set<string>>(new Set(["p2", "p4"]));
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
-  const [visibleStats, setVisibleStats] = useState<Record<string, boolean[]>>(
+  const [visibleStats,] = useState<Record<string, boolean[]>>(
     {},
   );
   const [visibleCols, setVisibleCols] = useState<Record<string, boolean>>({});
@@ -2178,7 +2201,6 @@ export default function Dashboard2() {
   const dataset = datasets[active] ?? Object.values(datasets)[0];
 
   if (!datasets[active] && process.env.NODE_ENV !== "production") {
-    // eslint-disable-next-line no-console
     console.warn(
       `[Dashboard2] No dataset found for nav item "${active}" — falling back to "${dataset.key}". Add a matching entry in buildDatasets().`,
     );
@@ -2383,107 +2405,104 @@ export default function Dashboard2() {
     }));
 
   return (
-    <div className={darkMode ? "dark" : ""}>
-      <div
-        style={font}
-        className="relative flex h-screen w-full overflow-hidden bg-white shadow-sm dark:border-neutral-800 dark:bg-black"
-      >
-        <Sidebar
-          active={active}
-          setActive={setActive}
-          search={search}
-          setSearch={setSearch}
-          onUpgrade={() => push("Redirecting to billing…")}
-          onLearnMore={() => push("Opening plan details…")}
+    <div
+      style={font}
+      className="relative flex h-screen w-full overflow-hidden bg-white shadow-sm dark:border-neutral-800 dark:bg-black"
+    >
+      <Sidebar
+        active={active}
+        setActive={setActive}
+        search={search}
+        setSearch={setSearch}
+        onUpgrade={() => push("Redirecting to billing…")}
+        onLearnMore={() => push("Opening plan details…")}
+      />
+
+      <main className="flex min-w-0 flex-1 flex-col overflow-hidden">
+        <TopBar
+          title={dataset.title}
+          onShare={() => push("Share link copied")}
+          onCustomizeWidget={() => setCustomizeOpen((o) => !o)}
+          notifCount={notifCount}
+          onBell={() => {
+            setNotifCount(0);
+            push("Notifications cleared");
+          }}
+          darkMode={darkMode}
+          onToggleTheme={toggleTheme}
         />
-
-        <main className="flex min-w-0 flex-1 flex-col overflow-hidden">
-          <TopBar
-            title={dataset.title}
-            onShare={() => push("Share link copied")}
-            onCustomizeWidget={() => setCustomizeOpen((o) => !o)}
-            notifCount={notifCount}
-            onBell={() => {
-              setNotifCount(0);
-              push("Notifications cleared");
+        <div className="relative flex-1 overflow-y-auto pb-4">
+          <Toolbar
+            statusFilter={statusFilter}
+            setStatusFilter={setStatusFilter}
+            sortOption={sortOption}
+            setSortOption={(v) => {
+              setSortOption(v);
+              setSortKey(null);
             }}
-            darkMode={darkMode}
-            setDarkMode={setDarkMode}
+            statusOptions={statusOptions}
+            showStats={showStats}
+            setShowStats={setShowStats}
+            onCustomize={() => setCustomizeOpen((o) => !o)}
+            onExport={handleExport}
+            onAdd={handleAdd}
+            addLabel={dataset.addLabel}
           />
-          <div className="relative flex-1 overflow-y-auto pb-4">
-            <Toolbar
-              statusFilter={statusFilter}
-              setStatusFilter={setStatusFilter}
-              sortOption={sortOption}
-              setSortOption={(v) => {
-                setSortOption(v);
-                setSortKey(null);
-              }}
-              statusOptions={statusOptions}
-              showStats={showStats}
-              setShowStats={setShowStats}
-              onCustomize={() => setCustomizeOpen((o) => !o)}
-              onExport={handleExport}
-              onAdd={handleAdd}
-              addLabel={dataset.addLabel}
-            />
 
-            <AnimatePresence>
-              {customizeOpen && (
-                <CustomizePopover
-                  columns={dataset.columns.map((c) => c.label)}
-                  visibleCols={visibleCols}
-                  toggleCol={toggleCol}
-                  onClose={() => setCustomizeOpen(false)}
-                />
-              )}
-            </AnimatePresence>
-
-            {showStats && (
-              <StatsRow
-                stats={dataset.stats}
-                visible={statsVisibility}
-                focused={focusedStat}
-                setFocused={setFocusedStat}
+          <AnimatePresence>
+            {customizeOpen && (
+              <CustomizePopover
+                columns={dataset.columns.map((c) => c.label)}
+                visibleCols={visibleCols}
+                toggleCol={toggleCol}
+                onClose={() => setCustomizeOpen(false)}
               />
             )}
+          </AnimatePresence>
 
-            <div className="px-6 pt-5">
-              <ProductTable
-                columns={dataset.columns}
-                rows={pagedRows}
-                visibleCols={visibleCols}
-                selected={selected}
-                toggleRow={toggleRow}
-                toggleAll={toggleAll}
-                sortKey={sortKey}
-                sortDir={sortDir}
-                onSortColumn={onSortColumn}
-                editingId={editingId}
-                editValue={editValue}
-                setEditValue={setEditValue}
-                onCommitEdit={commitEdit}
-              />
-              <BulkActionBar
-                count={selected.size}
-                onClear={() => setSelected(new Set())}
-                onApplyCode={handleApplyCode}
-                onEditInfo={handleEditInfo}
-                onDelete={handleDelete}
-              />
-              <Pagination
-                page={page}
-                setPage={setPage}
-                pageSize={pageSize}
-                setPageSize={setPageSize}
-                totalRows={filteredRows.length}
-              />
-            </div>
+          {showStats && (
+            <StatsRow
+              stats={dataset.stats}
+              visible={statsVisibility}
+              focused={focusedStat}
+              setFocused={setFocusedStat}
+            />
+          )}
+
+          <div className="px-6 pt-5">
+            <ProductTable
+              columns={dataset.columns}
+              rows={pagedRows}
+              visibleCols={visibleCols}
+              selected={selected}
+              toggleRow={toggleRow}
+              toggleAll={toggleAll}
+              sortKey={sortKey}
+              sortDir={sortDir}
+              onSortColumn={onSortColumn}
+              editingId={editingId}
+              editValue={editValue}
+              setEditValue={setEditValue}
+              onCommitEdit={commitEdit}
+            />
+            <BulkActionBar
+              count={selected.size}
+              onClear={() => setSelected(new Set())}
+              onApplyCode={handleApplyCode}
+              onEditInfo={handleEditInfo}
+              onDelete={handleDelete}
+            />
+            <Pagination
+              page={page}
+              setPage={setPage}
+              pageSize={pageSize}
+              setPageSize={setPageSize}
+              totalRows={filteredRows.length}
+            />
           </div>
-        </main>
-
-        <ToastStack toasts={toasts} />
-      </div>
+        </div>
+      </main>
+      <ToastStack toasts={toasts} />
     </div>
   );
 }
