@@ -1,8 +1,8 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import { useState, useRef } from "react";
-import Image from "next/image";
 
 // ─── Avatars ──────────────────────────────────────────────────────────────────
 
@@ -100,7 +100,7 @@ export default function CTASection1() {
   const [email, setEmail] = useState("");
 
   return (
-    <section className="w-full py-28 px-4 overflow-hidden bg-white dark:bg-zinc-950">
+    <section className="w-full py-28 px-4 overflow-hidden">
       <div className="max-w-3xl mx-auto flex flex-col items-center text-center">
         {/* ── Headline ── */}
         <h2
@@ -203,17 +203,6 @@ export default function CTASection1() {
           }}
           className="flex items-center gap-2.5"
         >
-          {/* <div className="flex -space-x-2.5">
-            {avatars.map((src, i) => (
-              <img
-                key={i}
-                src={src}
-                alt=""
-                className="w-7 h-7 rounded-full border-2 border-white object-cover shadow-sm"
-              />
-            ))}
-          </div> */}
-
           <span className="text-[13px] text-zinc-600 dark:text-zinc-400">
             11.5k+ devs already subscribed
           </span>

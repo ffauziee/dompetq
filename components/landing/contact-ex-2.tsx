@@ -121,7 +121,7 @@ export default function ContactSection({ id }: { id?: string }) {
     <section
       id={id}
       ref={ref}
-      className="w-full min-h-screen bg-white dark:bg-zinc-950 flex items-center justify-center px-6 py-24"
+      className="w-full min-h-screen flex items-center justify-center px-6 py-24"
       style={{ fontFamily: "'Inter', 'DM Sans', sans-serif" }}
     >
       <div className="w-full max-w-5xl grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-20 items-stretch">

@@ -179,7 +179,7 @@ export default function FAQ({ id }: { id?: string }) {
   };
 
   return (
-    <div id={id} ref={containerRef} className="min-h-screen bg-white dark:bg-zinc-950">
+    <div id={id} ref={containerRef} className="min-h-screen">
       <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-8 py-2 sm:py-6 md:py-16">
         {/* Main Layout - Two columns: Title on left, FAQs on right */}
         <div className="flex flex-col md:flex-row gap-8 sm:gap-12 md:gap-16 lg:gap-24">

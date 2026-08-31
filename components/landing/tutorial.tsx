@@ -1,3 +1,5 @@
+"use client";
+
 import { motion } from "framer-motion";
 
 const fadeInUp = {
@@ -50,6 +52,7 @@ const steps = [
 export default function TutorialSection({ id }: { id?: string }) {
   return (
     <motion.section
+      id={id ?? "tutorial"}
       className="max-w-7xl mx-auto px-6 pt-10 pb-20 border-x border-black/10 dark:border-white/10"
       {...fadeInUp}
     >
@@ -87,10 +90,10 @@ export default function TutorialSection({ id }: { id?: string }) {
               className={`px-6 py-12 ${i < 3 ? "border-r border-black/10 dark:border-white/10" : ""}`}
               variants={staggerItem}
             >
-              <div className="text-xs text-black/50 dark:text-white/50 font-mono tracking-wider mb-6">
+              <div className="text-xs text-black/65 dark:text-white/50 font-mono tracking-wider mb-6">
                 {item.number}
               </div>
-              <div className="w-8 h-8 mb-6 text-black/50 dark:text-white/50">
+              <div className="w-8 h-8 mb-6 text-black/65 dark:text-white/50">
                 <svg
                   viewBox="0 0 24 24"
                   fill="none"
@@ -106,7 +109,7 @@ export default function TutorialSection({ id }: { id?: string }) {
               <h3 className="text-lg font-bold mb-3 text-black dark:text-white">
                 {item.title}
               </h3>
-              <p className="text-sm text-black/50 dark:text-white/50 leading-relaxed">
+              <p className="text-sm text-black/65 dark:text-white/50 leading-relaxed">
                 {item.description}
               </p>
             </motion.div>

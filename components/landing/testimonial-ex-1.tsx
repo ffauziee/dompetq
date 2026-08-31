@@ -130,7 +130,7 @@ function TestimonialCard({ t }: { t: Testimonial }) {
 /* ─── Section ─── */
 export default function TestimonialsSection1() {
   return (
-    <section className="w-full py-24 px-4 bg-white dark:bg-zinc-950">
+    <section className="w-full py-24 px-4">
       <div className="max-w-5xl mx-auto">
         {/* ── Header ── */}
         <motion.div

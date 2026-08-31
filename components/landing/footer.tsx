@@ -2,7 +2,6 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 import {
   FaInstagram, // Instagram
   FaLinkedin, // LinkedIn
@@ -63,7 +62,7 @@ const SOCIAL_LINKS = [
 
 export default function Footer1() {
   return (
-    <footer className="border-t border-gray-100 dark:border-zinc-800 bg-white dark:bg-zinc-950 mt-24 py-16 px-6">
+    <footer className="border-t border-gray-100 dark:border-zinc-800 mt-24 py-16 px-6">
       <div className="max-w-7xl mx-auto px-6 pt-10s">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-10 mb-14">
           <div className="col-span-2 md:col-span-2">
@@ -71,7 +70,9 @@ export default function Footer1() {
               <img
                 src="/logoFull.svg"
                 alt="DompetQ"
-                className="h-20 w-20 rounded-xl"
+                width={998}
+                height={482}
+                className="h-10 w-auto dark:invert"
               />
             </div>
             <p className="text-gray-400 dark:text-zinc-500 text-xs leading-relaxed max-w-45">
